@@ -61,7 +61,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
                                 password: e.target.value
                             })
                         }} />
-                        <button onClick={sendRequest} type="button" className="mt-5 w-full text-white bg-gray-800 hover:bg-gray-900 focus:ring-4 focus:ring-gray-300 font-medium rounded-md text-sm px-4 py-2.5">
+                        <button onClick={sendRequest} type="button" className="cursor-pointer mt-5 w-full text-white bg-gray-800 hover:bg-gray-900 focus:ring-4 focus:ring-gray-300 font-medium rounded-md text-sm px-4 py-2.5">
                             {type === "signup" ? "Sign Up" : "Sign In"}
                         </button>
                     </div>
