@@ -1,8 +1,12 @@
 # Blog App
 
-A full-stack blogging application where users can sign up, sign in, create blog posts, view published blogs, and read individual posts.
+A full-stack Medium like blogging application where users can sign up, sign in, create blog posts, view published blogs, and read individual posts.
 
 The application is built with **React and TypeScript** on the frontend and **Hono running on Cloudflare Workers** on the backend. It uses **PostgreSQL with Prisma and Prisma Accelerate** for database access and **JWT** for authentication.
+
+## Live Demo
+
+👉 (https://blogging-app-ten-taupe.vercel.app/)
 
 ## Tech Stack
 
