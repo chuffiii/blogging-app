@@ -1,0 +1,1 @@
+export const BACKEND_URL = "https://backend.shinigamilight252001.workers.dev"
