@@ -20,8 +20,9 @@ export const AppBar = () => {
                     Log out
                 </button>
             </Link>
-
-            <Avatar name={user.name || "User"} size="big" />
+            <div className="hidden lg:block">
+                <Avatar name={user.name || "User"} size="big" />
+            </div>
         </div>
 
     </div>
