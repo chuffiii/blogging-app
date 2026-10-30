@@ -8,12 +8,14 @@
   },
   "dependencies": {
     "@chuffiii/medium-common": "^1.0.0",
-    "@prisma/client": "^6.6.0",
-    "@prisma/extension-accelerate": "^3.0.1",
+    "@prisma/adapter-pg": "^6.19.0",
+    "@prisma/client": "^6.19.0",
     "hono": "^4.13.2",
-    "prisma": "^6.6.0"
+    "pg": "^8.23.1",
+    "prisma": "^6.19.0"
   },
   "devDependencies": {
+    "@types/pg": "^8.23.1",
     "wrangler": "^4.110.0"
   }
 }

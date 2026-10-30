@@ -1,20 +1,24 @@
 import { Hono } from "hono"
-import { PrismaClient } from "@prisma/client/edge"
-import { withAccelerate } from "@prisma/extension-accelerate"
+import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { sign } from "hono/jwt"
-import { signupInput,signinInput } from "@chuffiii/medium-common"
+import { signupInput, signinInput } from "@chuffiii/medium-common"
 
 export const userRouter = new Hono<{
 	Bindings: {
-		DATABASE_URL: string;
+		HYPERDRIVE: {
+            connectionString: string;
+        };
 		JWT_SECRET: string;
 	}
 }>();
 
 userRouter.post('/signup', async (c) => {
-	const prisma = new PrismaClient({
-		datasourceUrl: c.env?.DATABASE_URL,
-	}).$extends(withAccelerate());
+	const adapter = new PrismaPg({
+		connectionString: c.env.HYPERDRIVE.connectionString,
+	});
+
+	const prisma = new PrismaClient({ adapter });
 
 	const body = await c.req.json();
 
@@ -22,7 +26,7 @@ userRouter.post('/signup', async (c) => {
 
 	if (!parsedBody.success) {
 		c.status(411);
-		return c.json( {error: "Invalid input"} );
+		return c.json({ error: "Invalid input" });
 	}
 	try {
 		const user = await prisma.user.create({
@@ -33,10 +37,10 @@ userRouter.post('/signup', async (c) => {
 			}
 		});
 		const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
-		return c.json({ 
-		jwt,
-		name: user.name
-	});
+		return c.json({
+			jwt,
+			name: user.name
+		});
 	} catch (e) {
 		c.status(403);
 		return c.json({ error: "error while signing up" });
@@ -44,9 +48,11 @@ userRouter.post('/signup', async (c) => {
 })
 
 userRouter.post('/signin', async (c) => {
-	const prisma = new PrismaClient({
-		datasourceUrl: c.env?.DATABASE_URL,
-	}).$extends(withAccelerate());
+	const adapter = new PrismaPg({
+		connectionString: c.env.HYPERDRIVE.connectionString,
+	});
+
+	const prisma = new PrismaClient({ adapter });
 
 	const body = await c.req.json();
 
@@ -68,9 +74,9 @@ userRouter.post('/signin', async (c) => {
 	}
 
 	const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
-	return c.json({ 
+	return c.json({
 		jwt,
 		name: user.name
-	
+
 	});
 })

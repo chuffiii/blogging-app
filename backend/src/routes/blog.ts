@@ -1,12 +1,14 @@
 import { Hono } from "hono"
-import { PrismaClient } from "@prisma/client/edge"
-import { withAccelerate } from "@prisma/extension-accelerate"
+import { PrismaClient } from "@prisma/client"
+import { PrismaPg } from "@prisma/adapter-pg"
 import { sign, verify } from "hono/jwt"
 import { createPostInput,updatePostInput } from "@chuffiii/medium-common"
 
 export const blogRouter = new Hono<{
     Bindings: {
-        DATABASE_URL: string;
+		HYPERDRIVE: {
+            connectionString: string;
+        };
         JWT_SECRET: string;
     };
     Variables:{
@@ -32,9 +34,11 @@ blogRouter.use('/*',async (c, next) => {
 
 blogRouter.post('/', async (c) => {
 	const userId = c.get('userId');
-	const prisma = new PrismaClient({
-		datasourceUrl: c.env?.DATABASE_URL	,
-	}).$extends(withAccelerate());
+	const adapter = new PrismaPg({
+    connectionString: c.env.HYPERDRIVE.connectionString,
+});
+
+const prisma = new PrismaClient({ adapter });
 
 	const body = await c.req.json();
 	const parsedBody = createPostInput.safeParse(body);
@@ -56,9 +60,11 @@ blogRouter.post('/', async (c) => {
 
 blogRouter.put('/', async (c) => {
 	const userId = c.get('userId');
-	const prisma = new PrismaClient({
-		datasourceUrl: c.env?.DATABASE_URL	,
-	}).$extends(withAccelerate());
+	const adapter = new PrismaPg({
+    connectionString: c.env.HYPERDRIVE.connectionString,
+});
+
+const prisma = new PrismaClient({ adapter });
 
 	const body = await c.req.json();
 	const parsedBody = updatePostInput.safeParse(body);
@@ -82,9 +88,11 @@ blogRouter.put('/', async (c) => {
 });
 
 blogRouter.get('/bulk', async (c) => {
-	const prisma = new PrismaClient({
-		datasourceUrl: c.env?.DATABASE_URL	,
-	}).$extends(withAccelerate());
+	const adapter = new PrismaPg({
+    connectionString: c.env.HYPERDRIVE.connectionString,
+});
+
+const prisma = new PrismaClient({ adapter });
 	
 	const posts = await prisma.post.findMany({
 		select:{
@@ -106,9 +114,11 @@ blogRouter.get('/bulk', async (c) => {
 
 blogRouter.get('/:id', async (c) => {
 	const id = c.req.param('id');
-	const prisma = new PrismaClient({
-		datasourceUrl: c.env?.DATABASE_URL	,
-	}).$extends(withAccelerate());
+	const adapter = new PrismaPg({
+    connectionString: c.env.HYPERDRIVE.connectionString,
+});
+
+const prisma = new PrismaClient({ adapter });
 	
 	const post = await prisma.post.findUnique({
 		where: {
