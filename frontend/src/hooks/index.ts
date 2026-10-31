@@ -1,18 +1,23 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { BACKEND_URL } from "../config";
+import { useSearchParams } from "react-router-dom";
 
 export interface Blog {
     content: string,
     title: string,
     id: string,
-    createdAt:string,
+    createdAt: string,
     author: {
         name: string
     }
 }
 
 export const useBlogs = () => {
+
+    const [searchParams] = useSearchParams();
+    const page = Number(searchParams.get("page")) || 1;
+    const limit = Number(searchParams.get("limit")) || 10;
 
     const [loading, setLoading] = useState(true);
     const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -21,6 +26,10 @@ export const useBlogs = () => {
         axios.get(`${BACKEND_URL}/api/v1/blog/bulk`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            params: {
+                page,
+                limit
             }
         })
             .then(response => {
@@ -29,11 +38,11 @@ export const useBlogs = () => {
             })
 
 
-    }, [])
+    }, [page,limit])
 
     return {
         loading,
-        blogs
+        blogs,
     }
 }
 

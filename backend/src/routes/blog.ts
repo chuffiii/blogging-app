@@ -94,7 +94,15 @@ blogRouter.get('/bulk', async (c) => {
 
 const prisma = new PrismaClient({ adapter });
 	
+	const page = Number(c.req.query('page')) || 1;
+	const limit = Number(c.req.query('limit')) || 10;
+	
 	const posts = await prisma.post.findMany({
+		skip:(page-1)*limit,
+		take:limit,
+		orderBy:{
+			createdAt:'asc'
+		},
 		select:{
 			title:true,
 			content:true,
